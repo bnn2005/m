@@ -1,0 +1,56 @@
+LCD 
+#include <reg51.h> // Include register definition file for AT89C51
+#define LCD P0 // Define LCD data port
+sbit RS = P1^0; // Register Select pin
+sbit RW = P1^1; // Read/Write pin
+sbit E = P1^2; // Enable pin
+void Delay(unsigned int ms);
+void LCD_Command(unsigned char cmd);
+void LCD_Char(unsigned char Data);
+void LCD_Init(void);
+void LCD_String(char *str);
+void main() {
+LCD_Init(); // Initialize LCD
+LCD_String("ISQUAREIT TE E&TC"); // Display message
+while (1); // Loop forever
+}
+void LCD_Init(void) {
+Delay(20); // Wait for more than 15 ms after power on
+LCD_Command(0x38); // 2 Lines, 5x7 Matrix
+Delay(5); // Wait for a bit after this command
+LCD_Command(0x0C); // Display ON, Cursor OFF
+LCD_Command(0x06); // Increment cursor
+LCD_Command(0x01); // Clear display
+Delay(2); // Wait for clear command to complete
+}
+void LCD_Command(unsigned char cmd) {
+RS = 0; // Command mode
+RW = 0; // Write mode
+LCD = cmd; // Send command
+E = 1; // Enable high
+Delay(1); // Delay for processing
+E = 0; // Enable low
+Delay(5); // Wait for command to be executed
+
+}
+
+void LCD_Char(unsigned char Data) {
+RS = 1; // Data mode
+RW = 0; // Write mode
+LCD = Data; // Send data
+E = 1; // Enable high
+Delay(1); // Delay for processing
+E = 0; // Enable low
+Delay(5); // Wait for data to be written
+}
+void LCD_String(char *str) {
+while (*str) {
+LCD_Char(*str++); // Send each character
+}
+}
+void Delay(unsigned int ms) {
+unsigned int i, j;
+for (i = 0; i < ms; i++) {
+for (j = 0; j < 1275; j++); // Approx delay
+}
+}
