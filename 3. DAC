@@ -1,0 +1,55 @@
+SQUARE WAVE:
+#include<Reg51.h>
+void delay(unsigned int time);
+void main()
+{
+while(1)
+{
+P0=0XFF;
+delay(25);
+P0=0X00;
+delay(25);
+}
+}
+void delay(unsigned int time)
+{
+int i,j;
+for(i=0;i<time;i++)
+for(j=0;j<5000;j++);
+}
+
+TRIANGULAR WAVE:
+#include<reg51.h>
+
+void main()
+{
+    int count;
+
+    // Rising edge: 0x00 → 0xFF
+    for(count = 0x00; count <= 0xFF; count++)
+    {
+        P0 = count;
+    }
+
+    // Falling edge: 0xFF → 0x00
+    for(count = 0xFF; count >= 0x00; count--)
+    {
+        P0 = count;
+    }
+
+    // Repeat forever
+    while(1)
+    {
+        // Rising
+        for(count = 0x00; count <= 0xFF; count++)
+        {
+            P0 = count;
+        }
+
+        // Falling
+        for(count = 0xFF; count >= 0x00; count--)
+        {
+            P0 = count;
+        }
+    }
+}
