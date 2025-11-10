@@ -1,0 +1,59 @@
+DC motor
+#include <reg51.h>
+
+// --- Pin definitions ---
+sbit motor_pin1 = P1^0;
+sbit motor_pin2 = P1^1;
+sbit button_reverse = P2^0;
+
+// --- Global variable ---
+bit motor_direction = 0;
+
+// --- Delay function ---
+void delay(unsigned int time) {
+    unsigned int i, j;
+    for (i = 0; i < time; i++)
+        for (j = 0; j < 1275; j++);
+}
+
+// --- Slow motor delay (simulate low speed) ---
+void low_speed_delay(unsigned int time) {
+    unsigned int i, j;
+    for (i = 0; i < time; i++)
+        for (j = 0; j < 1000; j++); // Adjust value for desired RPM
+}
+
+// --- Main program ---
+void main() {
+    motor_pin1 = 1;
+    motor_pin2 = 0;
+
+    while (1) {
+        // Check for direction change button press
+        if (button_reverse == 0) {   // Active LOW button
+            delay(50);               // Debounce delay
+            while (button_reverse == 0);  // Wait until button released
+
+            motor_direction = !motor_direction; // Toggle direction
+
+            if (motor_direction == 1) {
+                motor_pin1 = 0;
+                motor_pin2 = 1; // Reverse direction
+            } else {
+                motor_pin1 = 1;
+                motor_pin2 = 0; // Forward direction
+            }
+
+            delay(50);
+        }
+
+        // Simulate low speed by toggling motor ON/OFF
+        motor_pin1 = 1;
+        motor_pin2 = 0;
+        low_speed_delay(10);    // Motor ON
+
+        motor_pin1 = 0;
+        motor_pin2 = 0;
+        low_speed_delay(10);    // Motor OFF
+    }
+}
