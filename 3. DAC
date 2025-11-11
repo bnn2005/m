@@ -33,8 +33,3 @@ for(count=0Xff;count>0X00;count--)
 {P0=count;
 }
 }
-
-            P0 = count;
-        }
-    }
-}
